@@ -1,5 +1,5 @@
 import pygame as pg
-from random import uniform, choice
+from random import uniform, choice, randint
 from settings import *
 from tilemap import collide_hit_rect
 
@@ -29,11 +29,13 @@ def collide_with_walls(sprite, group, dir):
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = PLAYER_LAYER #done before sprite init, is noticed and applied
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.player_img
         self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
         self.hit_rect = PLAYER_HIT_RECT
         self.hit_rect.center = self.rect.center
         self.vel = vec(0, 0)
@@ -62,6 +64,7 @@ class Player(pg.sprite.Sprite):
                 pos = self.pos + BARREL_OFFSET.rotate(-self.rot)
                 Bullet(self.game, pos, dir)
                 self.vel = vec(-KICKBACK, 0).rotate(-self.rot)
+                MuzzleFlash(self.game, pos)
 
     def update(self):
         self.get_keys()
@@ -79,11 +82,13 @@ class Player(pg.sprite.Sprite):
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
+        self._layer = MOB_LAYER
         self.groups = game.all_sprites, game.mobs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.mob_img
         self.rect = self.image.get_rect()
+        self.rect.center = (x,y)
         self.hit_rect = MOB_HIT_RECT.copy()
         self.hit_rect.center = self.rect.center
         self.pos = vec(x, y)
@@ -135,6 +140,7 @@ class Mob(pg.sprite.Sprite):
 
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir):
+        self._layer = BULLET_LAYER
         self.groups = game.all_sprites, game.bullets
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -158,6 +164,7 @@ class Bullet(pg.sprite.Sprite):
 
 class Wall(pg.sprite.Sprite):  # old, to be used with the text file generated map.
     def __init__(self, game, x, y):
+        self._layer = WALL_LAYER
         self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -171,6 +178,7 @@ class Wall(pg.sprite.Sprite):  # old, to be used with the text file generated ma
 
 class Obstacle(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
+        #self._layer = WALL_LAYER
         self.groups = game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -180,3 +188,21 @@ class Obstacle(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
+
+class MuzzleFlash(pg.sprite.Sprite):
+    def __init__(self, game, pos):
+        self._layer = EFFECTS_LAYER
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        size = randint(20, 50)
+        self.image = pg.transform.scale(choice(game.gun_flashes), (size, size))
+        self.rect = self.image.get_rect()
+        self.pos = pos
+        self.rect.center = pos
+        self.spawn_time = pg.time.get_ticks()
+
+    def update(self):
+        if pg.time.get_ticks() - self.spawn_time > FLASH_DURATION:
+            self.kill()
+
