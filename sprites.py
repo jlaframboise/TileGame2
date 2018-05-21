@@ -79,6 +79,11 @@ class Player(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
 
+    def add_health(self, amount):
+        self.health +=amount
+        if self.health > PLAYER_HEALTH:
+            self.health = PLAYER_HEALTH
+
 
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -111,7 +116,7 @@ class Mob(pg.sprite.Sprite):
         self.image = pg.transform.rotate(self.game.mob_img, self.rot)
         # self.rect = self.image.get_rect()
         self.rect.center = self.pos
-        self.acc = vec(1, 0).rotate(-self.rot)
+        self.acc = vec(1, 0.01).rotate(-self.rot) #wierd error, 'cannot scale a vector with zero length' if set to vec(1,0)
         self.avoid_mobs()
         self.acc.scale_to_length(self.speed)
         self.acc += self.vel * -1
@@ -205,4 +210,15 @@ class MuzzleFlash(pg.sprite.Sprite):
     def update(self):
         if pg.time.get_ticks() - self.spawn_time > FLASH_DURATION:
             self.kill()
+
+class Item(pg.sprite.Sprite):
+    def __init__(self, game, pos, type):
+        self._layer = ITEMS_LAYER
+        self.groups = game.all_sprites, game.items
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = game.item_images[type]
+        self.rect = self.image.get_rect()
+        self.type = type
+        self.rect.center = pos
 
