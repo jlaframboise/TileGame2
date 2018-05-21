@@ -2,7 +2,9 @@ import pygame as pg
 from random import uniform
 from settings import *
 from tilemap import collide_hit_rect
+
 vec = pg.math.Vector2
+
 
 def collide_with_walls(sprite, group, dir):
     if dir == 'x':
@@ -23,6 +25,7 @@ def collide_with_walls(sprite, group, dir):
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 2
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
+
 
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -73,6 +76,7 @@ class Player(pg.sprite.Sprite):
         collide_with_walls(self, self.game.walls, 'y')
         self.rect.center = self.hit_rect.center
 
+
 class Mob(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.mobs
@@ -118,6 +122,7 @@ class Mob(pg.sprite.Sprite):
         if self.health < MOB_HEALTH:
             pg.draw.rect(self.image, col, self.health_bar)
 
+
 class Bullet(pg.sprite.Sprite):
     def __init__(self, game, pos, dir):
         self.groups = game.all_sprites, game.bullets
@@ -140,7 +145,8 @@ class Bullet(pg.sprite.Sprite):
         if pg.time.get_ticks() - self.spawn_time > BULLET_LIFETIME:
             self.kill()
 
-class Wall(pg.sprite.Sprite): # old, to be used with the text file generated map.
+
+class Wall(pg.sprite.Sprite):  # old, to be used with the text file generated map.
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -152,13 +158,14 @@ class Wall(pg.sprite.Sprite): # old, to be used with the text file generated map
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+
 class Obstacle(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
         self.groups = game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.wall_img
-        self.rect = pg.Rect(x,y,w,h)
+        self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
         self.rect.x = x

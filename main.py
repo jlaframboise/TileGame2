@@ -9,6 +9,7 @@ from settings import *
 from sprites import *
 from tilemap import *
 
+
 # HUD functions
 def draw_player_health(surf, x, y, pct):
     if pct < 0:
@@ -26,6 +27,7 @@ def draw_player_health(surf, x, y, pct):
         col = RED
     pg.draw.rect(surf, col, fill_rect)
     pg.draw.rect(surf, WHITE, outline_rect, 2)
+
 
 class Game:
     def __init__(self):
@@ -65,9 +67,9 @@ class Game:
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == 'player':
                 self.player = Player(self, tile_object.x, tile_object.y)
-            if tile_object.name=='wall':
+            if tile_object.name == 'wall':
                 Obstacle(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-            if tile_object.name=='zombie':
+            if tile_object.name == 'zombie':
                 Mob(self, tile_object.x, tile_object.y)
         self.draw_debug = False
         self.camera = Camera(self.map.width, self.map.height)
@@ -145,6 +147,7 @@ class Game:
 
     def show_go_screen(self):
         pass
+
 
 # create the game object
 g = Game()
