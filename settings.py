@@ -49,6 +49,7 @@ FLASH_DURATION = 40 #ms
 # Mob settings
 MOB_IMG = 'zombie1_hold.png'
 MOB_SPEEDS = [150, 100, 75, 125, 150]
+MOB_SPEED_MULT = 1.5
 MOB_HIT_RECT = pg.Rect(0, 0, 30, 30)
 MOB_HEALTH = 100
 MOB_DAMAGE = 10

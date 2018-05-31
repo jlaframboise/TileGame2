@@ -102,7 +102,7 @@ class Mob(pg.sprite.Sprite):
         self.rect.center = self.pos
         self.rot = 0
         self.health = MOB_HEALTH
-        self.speed = choice(MOB_SPEEDS)
+        self.speed = choice(MOB_SPEEDS) * MOB_SPEED_MULT
 
     def avoid_mobs(self):
         for mob in self.game.mobs:
