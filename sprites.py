@@ -221,4 +221,5 @@ class Item(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.type = type
         self.rect.center = pos
+        self.hit_rect = self.rect
 
